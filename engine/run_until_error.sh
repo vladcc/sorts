@@ -1,0 +1,1 @@
+while ./engine $1 $2 >&$3; do :; done
