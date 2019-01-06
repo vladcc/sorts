@@ -11,14 +11,9 @@ static void * binary_insert_search(void * begin, void * end_incl, void * key,
 	byte_ptr end = end_incl;
 	byte_ptr mid = start + ((size_t)(end - start) / elm_size / 2) * elm_size;
 	
-	int comp_res;
 	while (start <= end)
 	{
-		comp_res = compar(key, mid);
-		
-		if (comp_res > 0)
-			start = mid + elm_size;
-		else if (comp_res < 0)
+		if (compar(key, mid) < 0)
 			end = mid - elm_size;
 		else
 			start = mid + elm_size;

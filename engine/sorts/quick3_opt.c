@@ -16,7 +16,7 @@
 
 #define rand_part(n) ((((((n) * LCG_MULT) + LCG_INCR) >> LCG_SHFT) & LCG_RMAX) % (n))
 
-#define MIN_PART 	5
+#define MIN_PART 	16
 #define MAX_STACK					(CHAR_BIT * sizeof(size_t))
 #define POP(part_start, part_sz)	((void) (--top, (part_start = top->start), (part_sz = top->size)))
 #define PUSH(part_start, part_sz)	((void) ((top->start = (part_start)), (top->size = (part_sz)), ++top))
@@ -73,9 +73,6 @@ void quick3_opt(void * arr, size_t arr_size, size_t elm_size,
 	// holds current pivot value
 	byte tmp[elm_size];
 	
-	// insertion sort variables
-	byte_ptr end, prev, current, next;
-	
 	// partition variables
 	size_t smaller, up, down, piv;
 	int comp_res;
@@ -93,20 +90,20 @@ void quick3_opt(void * arr, size_t arr_size, size_t elm_size,
 			down = curr_size - 1;
 			piv = rand_part(down);
 			
-			CPY(tmp, &curr_start[piv*elm_size], elm_size);
+			CPY(tmp, curr_start + piv * elm_size, elm_size);
 
 			while(up <= down)
 			{	
-				comp_res = compar(&curr_start[up*elm_size], tmp);
+				comp_res = compar(curr_start + up * elm_size, tmp);
 				
 				if (comp_res < 0)
 				{
-					SWAP(&curr_start[smaller*elm_size], &curr_start[up*elm_size], elm_size);
+					SWAP(curr_start + smaller * elm_size, curr_start + up * elm_size, elm_size);
 					++smaller, ++up;
 				}
 				else if (comp_res > 0)
 				{
-					SWAP(&curr_start[down*elm_size], &curr_start[up*elm_size], elm_size);
+					SWAP(curr_start + down * elm_size, curr_start + up * elm_size, elm_size);
 					--down;
 				}
 				else
@@ -130,14 +127,37 @@ void quick3_opt(void * arr, size_t arr_size, size_t elm_size,
 		}
 	
 		/* ---  insertion sort --- */
-		end = curr_start + curr_size * elm_size;
-		for (next = curr_start + elm_size; next < end; next += elm_size)
 		{
-			for (current = next, prev = current - elm_size; 
-				 current > curr_start && compar(prev, current) > 0;
-				 current -= elm_size, prev = current - elm_size)
+			byte_ptr end = curr_start + curr_size * elm_size;
+			byte_ptr end_sorted = curr_start;
+			byte buff[elm_size];
+			
+			for (byte_ptr next = curr_start + elm_size; next < end; next += elm_size)
 			{
-				SWAP(prev, current, elm_size);
+				CPY(buff, next, elm_size);
+				{
+					byte_ptr start = curr_start;
+					byte_ptr end = next-elm_size;
+					byte_ptr mid = start + ((size_t)(end - start) / elm_size / 2) * elm_size;
+
+					while (start <= end)
+					{
+						if (compar(buff, mid) < 0)
+							end = mid - elm_size;
+						else
+							start = mid + elm_size;
+						
+						mid = start + ((size_t)(end - start) / elm_size / 2) * elm_size;
+					}
+					
+					end_sorted = (compar(start, buff) > 0) ? start : start + elm_size;
+				}
+				
+				if (next > end_sorted)
+				{
+					memmove(end_sorted + elm_size, end_sorted, next - end_sorted);
+					CPY(end_sorted, buff, elm_size);
+				}
 			}
 		}
 		/* --- /insertion sort --- */

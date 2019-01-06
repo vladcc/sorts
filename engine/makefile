@@ -19,16 +19,21 @@ HEAP_SRT=$(SRTS_DIR)/heap_sort
 SHELL_SRT=$(SRTS_DIR)/shell_sort
 BIN_INS_SRT=$(SRTS_DIR)/binary_insertion_sort
 INS_SRT=$(SRTS_DIR)/insertion_sort
+BIN_INS_SRT_MM=$(SRTS_DIR)/binary_insertion_sort_mm
+INS_SRT_MM=$(SRTS_DIR)/insertion_sort_mm
+INS_SRT_MCPY=$(SRTS_DIR)/insertion_sort_mcpy
 COMB_SRT=$(SRTS_DIR)/comb_sort
 CKTL_SRT=$(SRTS_DIR)/cocktail_sort
 BUB_SRT=$(SRTS_DIR)/bubble_sort
 SEL_SRT=$(SRTS_DIR)/selection_sort
 CYC_SRT=$(SRTS_DIR)/cycle_sort
 Q3_OPT_SRT=$(SRTS_DIR)/quick3_opt
+MERGE_SRT_MCPY=$(SRTS_DIR)/merge_sort_mcpy
 
 ALL=$(ENGN).$(OBJ) $(SWAP).$(OBJ) $(INS_SRT).$(OBJ) $(BUB_SRT).$(OBJ) $(SEL_SRT).$(OBJ) $(HEAP_SRT).$(OBJ) 
 ALL+=$(MERGE_SRT).$(OBJ) $(QUICK_SRT_M3).$(OBJ) $(QUICK_SRT_R).$(OBJ) $(SHELL_SRT).$(OBJ) $(TIM_SRT).$(OBJ) $(BIN_INS_SRT).$(OBJ)
 ALL+=$(QUICK3).$(OBJ) $(DP_QUICK).$(OBJ) $(CKTL_SRT).$(OBJ) $(COMB_SRT).$(OBJ) $(CYC_SRT).$(OBJ) $(Q3_OPT_SRT).$(OBJ)
+ALL+=$(BIN_INS_SRT_MM).$(OBJ) $(INS_SRT_MM).$(OBJ) $(INS_SRT_MCPY).$(OBJ) $(MERGE_SRT_MCPY).$(OBJ)
 
 test: $(ALL)
 	$(CC) $? -o $(ENGN).$(BIN) $(CFLAGS)
@@ -50,7 +55,7 @@ $(QUICK3).$(OBJ): $(QUICK3).$(SRC) $(QUICK3).$(HDR)
 
 $(Q3_OPT_SRT).$(OBJ): $(Q3_OPT_SRT).$(SRC) $(Q3_OPT_SRT).$(HDR)
 	$(CC) $< -c -o $@ $(CFLAGS)	
-	
+
 $(DP_QUICK).$(OBJ): $(DP_QUICK).$(SRC) $(DP_QUICK).$(HDR)
 	$(CC) $< -c -o $@ $(CFLAGS)	
 	
@@ -58,6 +63,9 @@ $(TIM_SRT).$(OBJ): $(TIM_SRT).$(SRC) $(TIM_SRT).$(HDR)
 	$(CC) $< -c -o $@ $(CFLAGS)	
 	
 $(MERGE_SRT).$(OBJ): $(MERGE_SRT).$(SRC) $(MERGE_SRT).$(HDR)
+	$(CC) $< -c -o $@ $(CFLAGS)
+	
+$(MERGE_SRT_MCPY).$(OBJ): $(MERGE_SRT_MCPY).$(SRC) $(MERGE_SRT_MCPY).$(HDR)
 	$(CC) $< -c -o $@ $(CFLAGS)
 	
 $(HEAP_SRT).$(OBJ): $(HEAP_SRT).$(SRC) $(HEAP_SRT).$(HDR)
@@ -68,8 +76,17 @@ $(SHELL_SRT).$(OBJ): $(SHELL_SRT).$(SRC) $(SHELL_SRT).$(HDR)
 	
 $(BIN_INS_SRT).$(OBJ): $(BIN_INS_SRT).$(SRC) $(BIN_INS_SRT).$(HDR)
 	$(CC) $< -c -o $@ $(CFLAGS)
+
+$(BIN_INS_SRT_MM).$(OBJ): $(BIN_INS_SRT_MM).$(SRC) $(BIN_INS_SRT_MM).$(HDR)
+	$(CC) $< -c -o $@ $(CFLAGS)
 	
 $(INS_SRT).$(OBJ): $(INS_SRT).$(SRC) $(INS_SRT).$(HDR)
+	$(CC) $< -c -o $@ $(CFLAGS)
+
+$(INS_SRT_MCPY).$(OBJ): $(INS_SRT_MCPY).$(SRC) $(INS_SRT_MCPY).$(HDR)
+	$(CC) $< -c -o $@ $(CFLAGS)
+
+$(INS_SRT_MM).$(OBJ): $(INS_SRT_MM).$(SRC) $(INS_SRT_MM).$(HDR)
 	$(CC) $< -c -o $@ $(CFLAGS)
 
 $(CKTL_SRT).$(OBJ): $(CKTL_SRT).$(SRC) $(CKTL_SRT).$(HDR)

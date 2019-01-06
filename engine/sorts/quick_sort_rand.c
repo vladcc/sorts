@@ -12,31 +12,57 @@
 #define LCG_RMAX 	0x7FFFFFFF
 #define LCG_SHFT 	16
 
-#define rand_part(n) ((((((n) * LCG_MULT) + LCG_INCR) >> LCG_SHFT) & LCG_RMAX) % (n))
+#define rand_part(n)\
+((((((n) * LCG_MULT) + LCG_INCR) >> LCG_SHFT) & LCG_RMAX) % (n))
 
 #define MIN_PART 16
 
 typedef unsigned char byte;
 typedef unsigned char * byte_ptr;
 
-static void insertion_sort(void * arr, size_t arr_size, size_t elm_size, 
-					int (*compar)(const void * a, const void * b),
-					void (*swap)(void * a, void * b, size_t elm_size))
+static void * binary_insert_search(void * begin, void * end_incl, void * key,
+					size_t elm_size, 
+					int (*compar)(const void * a, const void * b))
 {
-	typedef unsigned char * byte_ptr;
+	byte_ptr start = begin;
+	byte_ptr end = end_incl;
+	byte_ptr mid = start + ((size_t)(end - start) / elm_size / 2) * elm_size;
+
+	while (start <= end)
+	{
+		if (compar(key, mid) < 0)
+			end = mid - elm_size;
+		else
+			start = mid + elm_size;
+		
+		mid = start + ((size_t)(end - start) / elm_size / 2) * elm_size;
+	}
 	
+	return (compar(start, key) > 0) ? start : start + elm_size;
+}
+
+static void binary_insertion_sort_mm(void * arr, size_t arr_size, size_t elm_size, 
+							int (*compar)(const void * a, const void * b),
+							void (*swap)(void * a, void * b, size_t elm_size))
+{
 	byte_ptr start = arr;
 	byte_ptr end = start + arr_size * elm_size;
-	byte_ptr prev, current, next;
+	byte_ptr end_sorted = start;
+	byte buff[elm_size];
 	
-	for (next = start + elm_size; next < end; next += elm_size)
+	for (byte_ptr next = start + elm_size; next < end; next += elm_size)
 	{
-		for (current = next, prev = current - elm_size; 
-			 current > start && compar(prev, current) > 0;
-			 current -= elm_size, prev = current - elm_size)
+		memcpy(buff, next, elm_size);
+		end_sorted = binary_insert_search(
+			start, next-elm_size, next, elm_size, compar
+			);
+		
+		if (next > end_sorted)
 		{
-			swap(prev, current, elm_size);
+			memmove(end_sorted + elm_size, end_sorted, next - end_sorted);
+			memcpy(end_sorted, buff, elm_size);
 		}
+		
 	}
 	
 	return;
@@ -116,6 +142,6 @@ void quick_sort_rand(void * arr, size_t arr_size, size_t elm_size,
 					void (*swap)(void * a, void * b, size_t elm_size))
 {
 	quick_sort_rec(arr, arr_size, elm_size, compar, swap);
-	insertion_sort(arr, arr_size, elm_size, compar, swap);
+	binary_insertion_sort_mm(arr, arr_size, elm_size, compar, swap);
 	return;
 }

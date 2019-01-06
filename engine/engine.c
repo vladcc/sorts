@@ -12,10 +12,14 @@
 #include "./sorts/dual_pivot_quicksort.h"
 #include "./sorts/shell_sort.h"
 #include "./sorts/merge_sort.h"
+#include "./sorts/merge_sort_mcpy.h"
 #include "./sorts/tim_sort.h"
 #include "./sorts/heap_sort.h"
 #include "./sorts/binary_insertion_sort.h"
+#include "./sorts/binary_insertion_sort_mm.h"
 #include "./sorts/insertion_sort.h"
+#include "./sorts/insertion_sort_mm.h"
+#include "./sorts/insertion_sort_mcpy.h"
 #include "./sorts/selection_sort.h"
 #include "./sorts/cycle_sort.h"
 #include "./sorts/comb_sort.h"
@@ -173,10 +177,14 @@ int main(int argc, char * argv[])
 		{dual_pivot_quicksort, "dual_pivot_quicksort()", count_swap},
 		{tim_sort, "tim_sort()", count_copy},
 		{merge_sort, "merge_sort()", count_copy},
+		{merge_sort_mcpy, "merge_sort_mcpy()", count_copy},
 		{heap_sort, "heap_sort()", count_swap},
 		{shell_sort,  "shell_sort()", count_swap},
 		{binary_insertion_sort, "binary_insertion_sort()", count_swap},
+		{binary_insertion_sort_mm, "binary_insertion_sort_mm()", count_swap},
 		{insertion_sort, "insertion_sort()", count_swap},
+		{insertion_sort_mm, "insertion_sort_mm()", count_swap},
+		{insertion_sort_mcpy, "insertion_sort_mcpy()", count_swap},
 		{selection_sort, "selection_sort()", count_swap},
 		{cycle_sort, "cycle_sort()", count_swap},
 		{comb_sort, "comb_sort()", count_swap},
@@ -192,7 +200,7 @@ int main(int argc, char * argv[])
 		exit(EXIT_FAILURE);
 	}
 	
-	size_t arr_size;
+	int arr_size;
 	
 	if (sscanf(argv[1], "%d", &arr_size) != 1)
 	{
@@ -216,8 +224,10 @@ int main(int argc, char * argv[])
 			exit(EXIT_SUCCESS);
 		}
 		else
+		{
 			fprintf(stderr, "Err: first argument has to be an int or %s\n", argstr[CONFIG]);
 			exit(EXIT_FAILURE);
+		}
 	}
 	
 	arr_opt aopt = RANDOM;
